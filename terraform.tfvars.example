@@ -1,0 +1,6 @@
+aws_region = "us-east-1"
+project = "thesis-devops-edge"
+edge_instance_type = "t3.small"
+edge_count = 3
+# edge_ami_id = "ami-0123456789abcdef0"
+# key_name = "my-ssh-key"
