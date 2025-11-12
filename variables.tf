@@ -25,7 +25,8 @@ variable "private_subnets" {
 
 variable "edge_instance_type" {
   type    = string
-  default = "t3.small"
+  default = "t3.micro"
+  #default = "t3.small"
 }
 
 variable "edge_count" {
@@ -35,15 +36,26 @@ variable "edge_count" {
 
 variable "eks_node_instance_type" {
   type    = string
-  default = "t3.medium"
+  default = "t3.micro"
+  #default = "t3.medium"
 }
 
 variable "edge_ami_id" {
   type    = string
-  default = ""
+  default = "ami-0169cce1b30bd64b9"
 }
 
 variable "key_name" {
   type    = string
-  default = ""
+  default = "Tfm"
+}
+
+variable "ssh_private_key_path" {
+  description = "Ruta al archivo de clave privada para conexión SSH"
+  type        = string
+}
+
+variable "admin_ip" {
+  description = "IP del administrador para acceso SSH (ejemplo: 181.x.x.x/32)"
+  type        = string
 }

@@ -1,3 +1,10 @@
+#Crea una o varias instancias EC2 (dependiendo de edge_count).
+#Usa una AMI preconfigurada con Docker, K3s y Node Exporter (la que generas con Packer).
+#Ejecuta un script de user data que:
+#Habilita Docker.
+#Si se pasan K3S_URL y K3S_TOKEN, el nodo se une automáticamente al clúster K3s master como agent.
+#Esto es clave para tu arquitectura Edge, ya que automatiza la unión al clúster sin pasos manuales.
+
 resource "aws_instance" "edge" {
   count         = var.edge_count
   ami           = var.ami_id
@@ -10,9 +17,9 @@ resource "aws_instance" "edge" {
     Project = var.project
   }
 
-  user_data = file("${path.module}/user-data.sh")
+  user_data = templatefile("${path.module}/user-data.sh", {
+    K3S_URL   = var.k3s_url
+    K3S_TOKEN = var.k3s_token
+  })
 }
 
-output "edge_ips" {
-  value = aws_instance.edge[*].public_ip
-}

@@ -1,0 +1,11 @@
+aws_region = "us-east-1"
+project = "thesis-devops-edge"
+edge_instance_type = "t3.micro"
+edge_count = 2
+edge_ami_id = "ami-0169cce1b30bd64b9"
+key_name = "Tfm"
+vpc_cidr       = "10.0.0.0/16"
+public_subnets = ["10.0.1.0/24", "10.0.2.0/24"]
+private_subnets = ["10.0.101.0/24","10.0.102.0/24"]
+ssh_private_key_path = "C:/Users/david/Documents/David/Master/8. TFM/Tfm.pem"
+admin_ip = "181.112.8.38/32"
