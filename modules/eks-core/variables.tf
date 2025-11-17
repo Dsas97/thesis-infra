@@ -1,6 +1,7 @@
 variable "project" { type = string }
 variable "vpc_id" { type = string }
-variable "subnets" { type = list(string) }
+variable "public_subnets" { type = list(string) }
+variable "private_subnets" { type = list(string) }
 variable "eks_node_instance_type" { type = string }
 variable "aws_region" {
   type    = string
@@ -31,5 +32,10 @@ variable "cluster_name" {
 
 variable "cluster_version" {
   description = "Versión de Kubernetes para el clúster de EKS."
+  type        = string
+}
+
+variable "admin_ip" {
+  description = "Mi IP pública con acceso al cluster"
   type        = string
 }

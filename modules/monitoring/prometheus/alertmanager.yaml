@@ -1,0 +1,19 @@
+global:
+  resolve_timeout: 5m
+
+route:
+  receiver: 'default'
+  group_by: ['alertname', 'severity']
+  group_wait: 30s
+  group_interval: 5m
+  repeat_interval: 1h
+
+receivers:
+  - name: 'default'
+    email_configs:
+      - to: 'devops@fintechsolutions.com'
+        from: 'alertmanager@monitoring.com'
+        smarthost: 'smtp.gmail.com:587'
+        auth_username: 'alertmanager@monitoring.com'
+        auth_identity: 'alertmanager@monitoring.com'
+        auth_password: 'APP_PASSWORD'

@@ -1,0 +1,19 @@
+{
+  "id": null,
+  "uid": "core-dashboard",
+  "title": "Core Node Metrics",
+  "timezone": "browser",
+  "schemaVersion": 36,
+  "panels": [
+    {
+      "type": "graph",
+      "title": "CPU Usage (Core Node)",
+      "targets": [
+        {
+          "expr": "rate(node_cpu_seconds_total{mode!='idle',instance=~'.*core.*'}[2m])",
+          "legendFormat": "{{instance}}"
+        }
+      ]
+    }
+  ]
+}

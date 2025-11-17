@@ -3,7 +3,7 @@ set -euo pipefail
 
 # Las variables quedan igual
 AWS_REGION="us-east-1"
-BUCKET="thesis-terraform-state-david-edge-2025"
+BUCKET="thesis-terraform-state-david-edge-1"
 DYNAMO_TABLE="thesis-terraform-locks"
 
 echo "Creando bucket S3 '$BUCKET' en region $AWS_REGION (si no existe)..."

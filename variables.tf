@@ -36,18 +36,18 @@ variable "edge_count" {
 
 variable "eks_node_instance_type" {
   type    = string
-  default = "t3.micro"
+  default = "t3.large"
   #default = "t3.medium"
 }
 
 variable "edge_ami_id" {
   type    = string
-  default = "ami-0169cce1b30bd64b9"
+  default = "ami-0055f4d58e2da38ef"
 }
 
 variable "key_name" {
   type    = string
-  default = "Tfm"
+  default = "TfmPay"
 }
 
 variable "ssh_private_key_path" {
@@ -58,4 +58,16 @@ variable "ssh_private_key_path" {
 variable "admin_ip" {
   description = "IP del administrador para acceso SSH (ejemplo: 181.x.x.x/32)"
   type        = string
+}
+
+variable "jenkins_instance_type" {
+  type    = string
+  default = "t3.micro"
+  #default = "t3.medium"
+}
+
+variable "grafana_admin_password" {
+  description = "Contraseña del administrador de Grafana"
+  type        = string
+  default     = "admin123"
 }

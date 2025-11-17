@@ -4,7 +4,7 @@
 
 # Nombre del cluster EKS
 output "cluster_name" {
-  value = module.eks.cluster_id
+  value = module.eks.cluster_name
 }
 
 # Endpoint del cluster EKS
@@ -31,3 +31,15 @@ output "k3s_server_url" {
 output "k3s_token" {
   value = var.k3s_token
 }
+
+
+# Salida del null_resource que actualiza kubeconfig (opcional, pero útil para depends_on)
+#output "update_kubeconfig" {
+  #description = "Recurso que actualiza kubeconfig local"
+  #value       = null_resource.update_kubeconfig.id
+#}
+
+output "null_resource_update_kubeconfig" {
+  value = null_resource.update_kubeconfig
+}
+

@@ -1,0 +1,19 @@
+{
+  "id": null,
+  "uid": "edge-dashboard",
+  "title": "Edge Node Metrics",
+  "timezone": "browser",
+  "schemaVersion": 36,
+  "panels": [
+    {
+      "type": "graph",
+      "title": "Memory Usage (Edge Node)",
+      "targets": [
+        {
+          "expr": "node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes * 100",
+          "legendFormat": "{{instance}}"
+        }
+      ]
+    }
+  ]
+}

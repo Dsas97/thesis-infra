@@ -5,12 +5,14 @@ module "vpc_default" {
   name = "${var.project}-vpc"
   cidr = var.vpc_cidr
 
-  azs             = ["${var.aws_region}a", "${var.aws_region}b"]
+  #azs             = ["${var.aws_region}a", "${var.aws_region}b"]
+  azs = ["us-east-1a", "us-east-1b"]
   public_subnets  = var.public_subnets
   private_subnets = var.private_subnets
 
   enable_nat_gateway = true
   single_nat_gateway = true
+  
 
   tags = {
     Project = var.project
