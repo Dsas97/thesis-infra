@@ -42,7 +42,7 @@ variable "eks_node_instance_type" {
 
 variable "edge_ami_id" {
   type    = string
-  default = "ami-0055f4d58e2da38ef"
+  default = "ami-0f78a28b8034eb29d"
 }
 
 variable "key_name" {

@@ -1,69 +1,59 @@
-# ------------------------------
-# Namespace para Prometheus/Grafana
-# ------------------------------
-#resource "kubernetes_namespace" "monitoring" {
-  #metadata {
-    #name = "monitoring"
-  #}
-#}
-
-# ------------------------------
-# Prometheus + Grafana mediante Helm
-# ------------------------------
+resource "kubernetes_namespace" "monitoring" {
+  metadata {
+    name = "monitoring"
+  }
+}
 resource "helm_release" "prometheus_stack" {
-  name       = "prometheus-stack"
-  repository = "https://prometheus-community.github.io/helm-charts"
-  chart      = "kube-prometheus-stack"
-  namespace  = "monitoring"
-  create_namespace = true  # ya creamos el namespace arriba
+  name             = "prometheus-stack"
+  repository       = "https://prometheus-community.github.io/helm-charts"
+  chart            = "kube-prometheus-stack"
+  namespace        = "monitoring"
+  create_namespace = false
 
-  set {
-    name  = "grafana.service.type"
-    value = "LoadBalancer"
-  }
+  values = [
+    file("${path.module}/values.yaml")
+  ]
 
-  set {
-    name  = "prometheus.service.type"
-    value = "LoadBalancer"
-  }
-
-  set {
-    name  = "grafana.adminPassword"
-    value = var.grafana_admin_password
-  }
-
-  #depends_on = [kubernetes_namespace.monitoring]
+  depends_on = [kubernetes_secret.additional_scrape]
 }
 
-# ------------------------------
-# Node Exporter (opcional, ya viene con kube-prometheus-stack)
-# ------------------------------
-resource "helm_release" "node_exporter" {
-  name       = "node-exporter"
-  repository = "https://prometheus-community.github.io/helm-charts"
-  chart      = "prometheus-node-exporter"
-  namespace  = "monitoring"
-  create_namespace = true
+# Obtener IPs privadas de los nodos edge
+data "aws_instances" "edge" {
+  filter {
+    name   = "tag:Project"
+    values = [var.project]
+  }
 
-  #depends_on = [kubernetes_namespace.monitoring]
+  filter {
+    name   = "tag:Name"
+    values = ["*edge*"]
+  }
 }
 
+locals {
+  edge_targets = [
+    for ip in data.aws_instances.edge.private_ips : "${ip}:9100"
+  ]
+}
 
+/*
+  SE ELIMINA EL BLOQUE data "templatefile" 
+  porque se usará la función nativa directamente.
+*/
 
-# module.monitoring.helm_release.prometheus_stack: Still creating... [06m20s elapsed]
-# module.monitoring.helm_release.prometheus_stack: Still creating... [06m30s elapsed]
-# module.monitoring.helm_release.prometheus_stack: Still creating... [06m40s elapsed]
-# ╷
-# │ Warning: Helm release "" was created but has a failed status. Use the `helm` command to investigate the error, correct it, then run Terraform again.
-# │
-# │   with module.monitoring.helm_release.prometheus_stack,
-# │   on modules\monitoring\main.tf line 13, in resource "helm_release" "prometheus_stack":
-# │   13: resource "helm_release" "prometheus_stack" {
-# │
-# ╵
-# ╷
-# │ Error: context deadline exceeded
-# │
-# │   with module.monitoring.helm_release.prometheus_stack,
-# │   on modules\monitoring\main.tf line 13, in resource "helm_release" "prometheus_stack":
-# │   13: resource "helm_release" "prometheus_stack" {
+resource "kubernetes_secret" "additional_scrape" {
+  metadata {
+    name      = "prometheus-additional-scrape"
+    namespace = "monitoring"
+  }
+
+  data = {
+    # ⬇️ USO DE LA FUNCIÓN NATIVA templatefile()
+    "additional-scrape-configs.yaml" = base64encode(templatefile("${path.module}/additional-scrape.tpl", {
+      targets = local.edge_targets
+    }))
+  }
+
+  type = "Opaque"
+  depends_on = [kubernetes_namespace.monitoring]
+}

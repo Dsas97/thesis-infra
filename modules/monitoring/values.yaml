@@ -1,0 +1,12 @@
+prometheus:
+  prometheusSpec:
+    additionalScrapeConfigsSecret:
+      name: prometheus-additional-scrape
+      key: additional-scrape-configs.yaml
+
+grafana:
+  service:
+    type: LoadBalancer
+
+prometheus-node-exporter:
+  enabled: false

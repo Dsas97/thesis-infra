@@ -13,7 +13,7 @@ module "vpc" {
   vpc_cidr        = var.vpc_cidr
   public_subnets  = var.public_subnets
   private_subnets = var.private_subnets
-  aws_region      = var.aws_region 
+  aws_region      = var.aws_region
 }
 
 module "ecr" {
@@ -90,6 +90,19 @@ provider "helm" {
   }
 }
 
+provider "kubernetes" {
+  alias                  = "eks"
+  host                   = module.eks.cluster_endpoint
+  cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
+
+  exec {
+    api_version = "client.authentication.k8s.io/v1beta1"
+    command     = "aws"
+    args        = ["eks", "get-token", "--cluster-name", module.eks.cluster_name, "--region", var.aws_region]
+  }
+}
+
+
 
 # ===========================================
 # ArgoCD
@@ -115,8 +128,10 @@ module "argocd" {
 module "monitoring" {
   source = "./modules/monitoring"
   providers = {
-    helm = helm.eks
+    helm       = helm.eks
+    kubernetes = kubernetes.eks
   }
+  project                            = var.project
   cluster_name                       = module.eks.cluster_name
   cluster_endpoint                   = module.eks.cluster_endpoint
   cluster_certificate_authority_data = module.eks.cluster_certificate_authority_data
